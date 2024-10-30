@@ -6,6 +6,9 @@
         margin: 0;
         padding: 0;
         height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     video {
         height: 100%;
@@ -13,7 +16,34 @@
         width: 100%;
         min-width: 100%;
     }
+    #play-icon {
+        position: absolute;
+    }
 </style>
-<video controls loop>
+<video id="video-player" muted loop>
     <source src="./fc.mp4" type="video/mp4" />
 </video>
+<audio id="audio-player" loop src="./fc.m4a"></audio>
+<div id="play-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="5rem" height="5rem" fill="#fff" class="bi bi-play-fill" viewBox="0 0 16 16">
+        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+    </svg>
+</div>
+<script>
+    let isPlay = false;
+    const audioPlayer = document.getElementById('audio-player');
+    const videoPlayer = document.getElementById('video-player');
+    const playIcon = document.getElementById('play-icon');
+    document.body.onclick = function(){
+        isPlay = !isPlay;
+        if(isPlay) {
+            audioPlayer.play();
+            videoPlayer.play();
+            playIcon.style.display = 'none';
+        } else {
+            audioPlayer.pause();
+            videoPlayer.pause();
+            playIcon.style.display = 'block';
+        }
+    }
+</script>
