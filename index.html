@@ -10,12 +10,14 @@
         justify-content: center;
         align-items: center;
     }
+
     video {
         height: 100%;
         min-height: 100%;
         width: 100%;
         min-width: 100%;
     }
+
     #play-icon {
         position: absolute;
     }
@@ -25,8 +27,10 @@
 </video>
 <audio id="audio-player" loop src="./fc.m4a"></audio>
 <div id="play-icon">
-    <svg xmlns="http://www.w3.org/2000/svg" width="5rem" height="5rem" fill="#fff" class="bi bi-play-fill" viewBox="0 0 16 16">
-        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="5rem" height="5rem" fill="#fff" class="bi bi-play-fill"
+        viewBox="0 0 16 16">
+        <path
+            d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
     </svg>
 </div>
 <script>
@@ -34,9 +38,9 @@
     const audioPlayer = document.getElementById('audio-player');
     const videoPlayer = document.getElementById('video-player');
     const playIcon = document.getElementById('play-icon');
-    document.body.onclick = function(){
+    document.body.onclick = function () {
         isPlay = !isPlay;
-        if(isPlay) {
+        if (isPlay) {
             audioPlayer.play();
             videoPlayer.play();
             playIcon.style.display = 'none';
@@ -46,4 +50,26 @@
             playIcon.style.display = 'block';
         }
     }
+</script>
+<script type="module">
+    import { DiscordSDK } from "https://esm.sh/@discord/embedded-app-sdk";
+
+    // Discord SDKの初期化 (自身のClient IDに置き換えてください)
+    const discordSdk = new DiscordSDK("1289296435514183791");
+
+    async function setupDiscordSdk() {
+        // SDKの準備が完了するのを待機
+        await discordSdk.ready();
+
+        // Rich Presence (Activity) の設定
+        await discordSdk.commands.setActivity({
+            activity: {
+                type: 0, // 0: Playing, 1: Streaming, 2: Listening, 3: Watching, 4: Custom, 5: Competing
+                details: "Warming up by the campfire",
+                state: "Listening to lofi",
+            }
+        });
+    }
+
+    setupDiscordSdk().catch(console.error);
 </script>
