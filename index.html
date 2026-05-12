@@ -83,39 +83,28 @@
         const tokenData = await response.json();
 
         if (tokenData.error || !tokenData.access_token) {
-            showDebug("Token Error: " + JSON.stringify(tokenData));
             throw new Error("Failed to get access token");
         }
-
-        showDebug("Token OK, authenticating...");
 
         // 3. Authenticate (取得したTokenで認証を完了)
         await discordSdk.commands.authenticate({ access_token: tokenData.access_token });
 
-        showDebug("Auth OK, setting activity...");
-
         // 4. Rich Presence (Activity) の設定
         await discordSdk.commands.setActivity({
             activity: {
-                type: 0, // 0: Playing, 1: Streaming, 2: Listening, 3: Watching, 4: Custom, 5: Competing
-                details: "Warming up by the campfire",
-                state: "Listening to lofi",
+                type: 3, // 0: Playing, 1: Streaming, 2: Listening, 3: Watching, 4: Custom, 5: Competing
+                // details: "Warming up by the campfire",
+                // state: "Listening to lofi",
+                buttons: [
+                    {
+                        label: "Launch Fortnite",
+                        url: "https://play.fn.gg/island/4110-6421-2257?pl=cr00001"
+                    }
+                ]
             }
         });
-
-        showDebug("Activity Set!");
     }
 
     setupDiscordSdk().catch((err) => {
-        console.error(err);
-        showDebug("SDK Error: " + err.message);
     });
-</script>
-<div id="debug-log" style="position: absolute; top: 10px; left: 10px; color: lime; font-family: monospace; z-index: 9999; background: rgba(0,0,0,0.5); padding: 5px;"></div>
-<script>
-    function showDebug(msg) {
-        const div = document.getElementById('debug-log');
-        div.innerHTML += msg + "<br>";
-        console.log(msg);
-    }
 </script>
