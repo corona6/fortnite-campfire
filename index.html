@@ -61,7 +61,30 @@
         // SDKの準備が完了するのを待機
         await discordSdk.ready();
 
-        // Rich Presence (Activity) の設定
+        // 1. Authorize (Discordクライアントに認証コードを要求)
+        const { code } = await discordSdk.commands.authorize({
+            client_id: "1289296435514183791",
+            response_type: "code",
+            state: "",
+            prompt: "none",
+            scope: ["identify", "rpc.activities.write"],
+        });
+
+        // 2. バックエンドサーバー経由でTokenを取得
+        // FIXME: Cloudflare Workersにデプロイした後、取得したURLに書き換えてください
+        const WORKER_URL = 'https://discord-activity-token-api.ssync.workers.dev/api/token';
+
+        const response = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code }),
+        });
+        const { access_token } = await response.json();
+
+        // 3. Authenticate (取得したTokenで認証を完了)
+        await discordSdk.commands.authenticate({ access_token });
+
+        // 4. Rich Presence (Activity) の設定
         await discordSdk.commands.setActivity({
             activity: {
                 type: 0, // 0: Playing, 1: Streaming, 2: Listening, 3: Watching, 4: Custom, 5: Competing
