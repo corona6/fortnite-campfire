@@ -79,10 +79,15 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code }),
         });
-        const { access_token } = await response.json();
+        const tokenData = await response.json();
+
+        if (tokenData.error || !tokenData.access_token) {
+            alert("Token Error: " + JSON.stringify(tokenData));
+            throw new Error("Failed to get access token");
+        }
 
         // 3. Authenticate (取得したTokenで認証を完了)
-        await discordSdk.commands.authenticate({ access_token });
+        await discordSdk.commands.authenticate({ access_token: tokenData.access_token });
 
         // 4. Rich Presence (Activity) の設定
         await discordSdk.commands.setActivity({
@@ -94,5 +99,8 @@
         });
     }
 
-    setupDiscordSdk().catch(console.error);
+    setupDiscordSdk().catch((err) => {
+        console.error(err);
+        alert("SDK Error: " + err.message);
+    });
 </script>
