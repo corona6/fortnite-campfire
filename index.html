@@ -82,12 +82,16 @@
         const tokenData = await response.json();
 
         if (tokenData.error || !tokenData.access_token) {
-            alert("Token Error: " + JSON.stringify(tokenData));
+            showDebug("Token Error: " + JSON.stringify(tokenData));
             throw new Error("Failed to get access token");
         }
 
+        showDebug("Token OK, authenticating...");
+
         // 3. Authenticate (取得したTokenで認証を完了)
         await discordSdk.commands.authenticate({ access_token: tokenData.access_token });
+
+        showDebug("Auth OK, setting activity...");
 
         // 4. Rich Presence (Activity) の設定
         await discordSdk.commands.setActivity({
@@ -97,10 +101,20 @@
                 state: "Listening to lofi",
             }
         });
+
+        showDebug("Activity Set!");
     }
 
     setupDiscordSdk().catch((err) => {
         console.error(err);
-        alert("SDK Error: " + err.message);
+        showDebug("SDK Error: " + err.message);
     });
+</script>
+<div id="debug-log" style="position: absolute; top: 10px; left: 10px; color: lime; font-family: monospace; z-index: 9999; background: rgba(0,0,0,0.5); padding: 5px;"></div>
+<script>
+    function showDebug(msg) {
+        const div = document.getElementById('debug-log');
+        div.innerHTML += msg + "<br>";
+        console.log(msg);
+    }
 </script>
