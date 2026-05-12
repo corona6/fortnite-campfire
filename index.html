@@ -71,8 +71,9 @@
         });
 
         // 2. バックエンドサーバー経由でTokenを取得
-        // FIXME: Cloudflare Workersにデプロイした後、取得したURLに書き換えてください
-        const WORKER_URL = 'https://discord-activity-token-api.ssync.workers.dev/api/token';
+        // CSP（セキュリティ）エラーを回避するため、Discordの「URL Mapping」機能を使います。
+        // Discord Developer PortalのURL Mappingで「/api」をCloudflareのURLに向ける設定を行ってください。
+        const WORKER_URL = '/api/token';
 
         const response = await fetch(WORKER_URL, {
             method: 'POST',
